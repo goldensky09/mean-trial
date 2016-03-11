@@ -1,1 +1,0 @@
-mongod --storageEngine=mmapv1 --dbpath D:/Workspace/mean-trial/data/db
