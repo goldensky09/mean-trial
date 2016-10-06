@@ -1,4 +1,4 @@
-//spinner closure excercise
+//spinner closure excercise.
 var spinner = {};
 (function (s) {
     'use strict';
@@ -14,9 +14,11 @@ var spinner = {};
 function getSpinner() {
     'use strict';
     var count = 0;
+
     function increment() {
         return ++count;
     }
+
     function decrement() {
         return --count;
     }
