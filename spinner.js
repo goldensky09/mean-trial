@@ -12,16 +12,17 @@ var spinner = {};
 }(spinner));
 
 function getSpinner() {
+    'use strict';
     var count = 0;
-    function increment () {
+    function increment() {
         return ++count;
     }
-    function decrement () {
+    function decrement() {
         return --count;
     }
     return {
         up: increment,
         down: decrement
-    }
+    };
 }
 var spinner = getSpinner();
