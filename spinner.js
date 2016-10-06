@@ -1,3 +1,4 @@
+//spinner excercise
 var spinner = {};
 (function (s) {
     'use strict';
