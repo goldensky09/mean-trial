@@ -1,3 +1,4 @@
+//spinner closure excercise
 var spinner = {};
 (function (s) {
     'use strict';
