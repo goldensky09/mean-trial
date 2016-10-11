@@ -6,7 +6,8 @@
     4. created object has a property constructor using which it maintains the reference to the function using which it was created
 */
 
-function Employee (id, name, salary) {
+function Employee(id, name, salary) {
+    'use strict';
     this.id = id;
     this.name = name;
     this.salary = salary;
