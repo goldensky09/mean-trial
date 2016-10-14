@@ -89,6 +89,9 @@
 
             	}
             };
+        isSafari = function(){
+
+        }
 
 		return {
 			/**
