@@ -56,22 +56,17 @@
             		/**
                      *  Ajax Post Url
                      */
-                    if(_util.isSafari()) {
+                    if(isSafari()) {
                         if(!document.ssoForm) {
-                            $('<form id="ssoForm" name="ssoForm" method=post action="'+_availableDomains[domain]["url"]+'" target="newWindow"><input id="gssso" name="gssso" value="'+cookieValue+'" /></form>').appendTo('body');
+                            $('<form id="ssoForm" name="ssoForm" method=post action="'+_availableDomains[domain]["url"]+'" target="newWindow"><input id="GSSSO" name="GSSSO" value="'+cookieValue+'" /></form>').appendTo('body');
                         }
                         var ssoWindow = window.open("","newWindow");
                         document.ssoForm.submit();
-                        $(ssoWindow.document).ready(function(){
-                           ssoWindow.location.href = href;
-                        });
-                        return;
                     }
             		$.ajax({
                         url: _availableDomains[domain]["url"],
-                        dataType: "json",
                         type: 'POST',
-                        async: false,
+                        async: isSafari(),
         				xhrFields: {
         					withCredentials: true
         				},
@@ -79,14 +74,14 @@
                             'GSSSO': cookieValue       // GSSSO cookie value from the current site/domain
                         },
                         success: function(data){
+                            isSafari() && (ssoWindow.location.href = href);
                             that.accessResponse(domain, data, callBack);
                         },
                         error: function(data){
+                            isSafari() && (ssoWindow.location.href = href);
                             that.accessResponse(domain, data, callBack);
                         }
                     });
-
-
             	}
             };
         isSafari = function(){
@@ -121,9 +116,7 @@
 					if(href){
 						that.click(href);
 					}
-                    if(_util.isSafari()) {
-                        return false;
-                    }
+                    isSafari() return false;
 				});
 			},
 			/**
