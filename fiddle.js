@@ -116,7 +116,9 @@
 					if(href){
 						that.click(href);
 					}
-                    isSafari() return false;
+                    if(isSafari()) {
+                        return false;
+                    }
 				});
 			},
 			/**
