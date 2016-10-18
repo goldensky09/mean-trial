@@ -109,7 +109,8 @@
                 * Prevent default action and redirect to link when SSO call is complete
                 * Binding event on body, In some cases links are dynamically created.
                 */
-				isSafari() && $("body [target='_blank']").on("click", function(e){
+				$("body [target='_blank']").on("click", function(e){
+                    console.log("inside bind");
                     e.preventDefault();
 					var href = $(this).attr("href");
 					if(href){
@@ -118,14 +119,6 @@
                     if(isSafari()) {
                         return false;
                     }
-				});
-
-                !isSafari() && $("body").on("mousedown", "[target='_blank']", function(e){
-                    e.preventDefault();
-					var href = $(this).attr("href");
-					if(href){
-						that.click(href);
-					}
 				});
 			},
 			/**
