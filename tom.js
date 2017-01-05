@@ -1,61 +1,123 @@
-var Card = React.createClass({
-  getInitialState: function(){
-    return {}
+{
+  "filter": {
+    "childs": [
+      "literatures",
+      "Funds",
+      "Formats"
+    ],
+    "literature": {
+      "label": "literature",
+      "childs": [
+        "all_literature",
+        [
+          "fund_updates",
+          "performance_update"
+        ]
+      ],
+      "collapsed": false,
+      "behaviour": "radio"
+    },
+    "all_literature": {
+      "label": "All Literature"
+    },
+    "fund_updates": {
+      "label": "Fund Updates"
+    },
+    "performance_update": {
+      "label": "performance update",
+      "all": {
+        "label": "All literature"
+      },
+      "collapsed": false,
+      "behaviour": "radio",
+      "childs": [
+        "all_performance_updats",
+        [
+          "Fact_card",
+          "Yield_report"
+        ]
+      ]
+    },
+    "all_performance_updats": {
+      "label": "all performance updats"
+    },
+    "Fact_card": {
+      "label": "Fact card"
+    },
+    "Yield_report": {
+      "label": "Fact card"
+    }
   },
-  componentDidMount: function() {
-    var component = this;
-    $.get("https://api.github.com/users/" + this.props.login, function(data){
-      component.setState(data);
-    });
-  },
-  render: function(){
-    return (
-      <div>
-        <img src={this.state.avatar_url}  />
-        <h3>{this.state.name}</h3>
-        <hr />
-      </div>    
-    )
+  "sortby": [
+    {
+      "label": "Alphabatic",
+      "key": "alphabatic"
+    },
+    {
+      "label": "Latest",
+      "key": "latest"
+    }
+  ],
+  "list": {
+    "childs": [
+      "MONEY_MARKET_FUND",
+      "EQUITY_FUND",
+      "DOC_SharehoderGuide"
+    ],
+    "MONEY_MARKET_FUND": {
+      "type": "FUND",
+      "title": "Money Market Fund",
+      "tagline": "A Core Holding for Your Portfolio",
+      "shareclass": "Service",
+      "ticker": "GSBIX",
+      "assetclasscolor": "",
+      "url": "[absolute url]",
+      "childs": [
+        "Sales_Support",
+        "Sales_Support_2"
+      ],
+      "ischecked": false,
+      "collapsed": false
+    },
+    "Sales_Support": {
+      "type": "CATEGORY",
+      "title": "Sales Support",
+      "childs": [
+        "DOC_SharehoderGuide",
+        "DOC_SharehoderGuide2"
+      ],
+      "ischecked": false
+    },
+    "DOC_SharehoderGuide": {
+      "type": "DOCUMENT",
+      "title": "PDF DETAILS WILL COME HERE",
+      "displaydate": "30 Oct 2015",
+      "modifieddate": "15 Dec 2015",
+      "audience": "General Public Use",
+      "thumbnail": "[absolute url]",
+      "finraletter": {
+        "title": "Finra Letter",
+        "url": "url will come here"
+      },
+      "fullfillmentcode": "",
+      "firms": [
+        {
+          "name": "Firm Name",
+          "status": "Firm Status",
+          "code": "Firm Code"
+        },
+        {
+          "name": "Firm Name",
+          "status": "Firm Status",
+          "code": "Firm Code"
+        }
+      ],
+      "issubscribable": true,
+      "issubscribed": false,
+      "iscartable": true,
+      "isfavorite": false,
+      "ininternal": false,
+      "ischecked": false
+    }
   }
-});
-
-var Form = React.createClass({
-  handleSubmit: function(e){
-    e.preventDefault();
-    var loginInput = this.refs.login;
-    
-    //Add the card here
-    this.props.addCard(loginInput.value);
-    loginInput.value = "";
-  },
-  render: function() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input placeholder="github login" ref="login"/>
-        <button>Add</button>
-      </form>
-    );
-  }
-});
-
-var Main = React.createClass({
-  getInitialState: function(){
-    return {logins: ['goldensky09']};
-  },
-  addCard: function(loginToAdd){
-    this.setState({logins: this.state.logins.concat(loginToAdd)});
-  },
-  render: function(){
-    var cards = this.state.logins.map(function(login){
-      return (<Card login={login} />)
-    });
-    return (
-      <div>
-        <Form addCard={this.addCard} />
-        {cards}
-      </div>
-    )
-  }
-});
-
-ReactDOM.render(<Main />, document.getElementById("container"));
+}
