@@ -1,16 +1,28 @@
-// This must be in a client library with the category cq.authoring.editor.hook
-/* global Granite, jQuery, document */
-(function ($, channel) {
-    'use strict';
-    $(function () {
-        var loadedTime = new Date();
-        channel.on('cq-layer-activated', function (event) {
-            if (event.prevLayer && event.layer !== event.prevLayer) {
-                var eventTime = new Date();
-                if (event.prevLayer !== 'Annotate' && event.layer !== 'Annotate' && (eventTime - loadedTime) > 1500) {
-                    location.reload();
-                }
-            }
-        });
-    });
-})(Granite.$, jQuery(document));
+!function() {
+  var emitter = {
+    emit: console.dir.bind(console)
+  }
+
+  function emit(mutation) {
+    var target = mutation.target
+    var name = mutation.attributeName
+    var value = target.getAttribute(name)
+
+    emitter.emit({
+      mutation: mutation,
+      target: target,
+      name: name,
+      value: value,
+      state: value != null
+    })
+  }
+
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(emit)
+  });
+
+  observer.observe(document.body, {
+    subtree: true,
+    attributes: true
+  });
+}();
