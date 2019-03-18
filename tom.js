@@ -1,119 +1,126 @@
-(function(win) {
-    'use strict';
-    
-    var listeners = [], 
-    doc = win.document, 
-    MutationObserver = win.MutationObserver || win.WebKitMutationObserver,
-    observer;
-    
-    function ready(selector, fn) {
-        // Store the selector and callback to be monitored
-        listeners.push({
-            selector: selector,
-            fn: fn
-        });
-        if (!observer) {
-            // Watch for changes in the document
-            observer = new MutationObserver(check);
-            observer.observe(doc.documentElement, {
-                childList: true,
-                subtree: true
-            });
-        }
-        // Check if the element is currently in the DOM
-        check();
-    }
-        
-    function check() {
-        // Check the DOM for elements matching a stored selector
-        for (var i = 0, len = listeners.length, listener, elements; i < len; i++) {
-            listener = listeners[i];
-            // Query for elements matching the specified selector
-            elements = doc.querySelectorAll(listener.selector);
-            for (var j = 0, jLen = elements.length, element; j < jLen; j++) {
-                element = elements[j];
-                // Make sure the callback isn't invoked with the 
-                // same element more than once
-                if (!element.ready) {
-                    element.ready = true;
-                    // Invoke the callback with the element
-                    listener.fn.call(element, element);
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="jquery.typeahead.js"></script>
+    <link rel="stylesheet" href="jquery.typeahead.css">
+</head>
+
+<body>
+
+
+    <form id="form-user_v1" name="form-user_v1">
+        <div class="typeahead__container">
+            <div class="typeahead__field">
+                <div class="typeahead__query">
+                    <input class="js-typeahead-user_v1" name="user_v1[query]" type="search" placeholder="Search"
+                        autocomplete="off">
+                </div>
+                <div class="typeahead__button">
+                    <button type="submit">
+                        <i class="typeahead__search-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    <script>
+        function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+        var renameKeys = function renameKeys(keysMap, obj) {
+            return Object.keys(obj).reduce(function (acc, key) {
+                return {
+                    ...acc,
+                    ..._defineProperty({}, keysMap[key] || key, obj[key])
+                };
+            }, {});
+        };
+        $.typeahead({
+            input: '.js-typeahead-user_v1',
+            minLength: 1,
+            order: "asc",
+            dynamic: true,
+            delay: 500,
+            backdrop: {
+                "background-color": "#fff"
+            },
+            template: function (query, item) {
+
+                var color = "#777";
+                if (item.status === "owner") {
+                    color = "#ff1493";
                 }
-            }
-        }
-    }
 
-    // Expose `ready`
-    win.ready = ready;
-            
-})(this);
+                return '<span class="row">' +
+                    '<span class="name">{{name}} <small style="color: ' + color + ';">({{type}})</small></span>' +
+                    '<span class="id">({{symbol}})</span><span class="id">({{region}})</span>' +
+                    "</span>"
+            },
+            emptyTemplate: "no result for {{query}}",
+            source: {
+                bestMatches: {
+                    display: "name",
+                    ajax: function (query) {
+                        return {
+                            type: "GET",
+                            url: "https://www.alphavantage.co/query",
+                            path: "bestMatches",
+                            data: {
+                                function: "SYMBOL_SEARCH",
+                                keywords: "{{query}}",
+                                apikey: "PJ8DJSLQLT0VRBUV",
+                                datatype: "json"
+                            },
+                            callback: {
+                                done: function (data) {
+                                    var tmpData = [];
+                                    data.bestMatches.forEach(element => {
+                                        tmpData.push(renameKeys({
+                                            "1. symbol": "symbol",
+                                            "2. name": "name",
+                                            "3. type": "type",
+                                            "4. region": "region",
+                                            "5. marketOpen": "marketOpen",
+                                            "6. marketClose": "marketClose",
+                                            "7. timezone": "timezone",
+                                            "8. currency": "currency",
+                                            "9. matchScore": "matchScore"
+                                        }, element));
+                                    });
+                                    data.bestMatches = tmpData;
+                                    return data;
+                                }
+                            }
+                        }
+                    }
 
+                }
+            },
+            callback: {
+                onClick: function (node, a, item, event) {
 
+                    // You can do a simple window.location of the item.href
+                    alert(JSON.stringify(item));
 
+                },
+                onSendRequest: function (node, query) {
+                    console.log('request is sent')
+                },
+                onReceiveRequest: function (node, query) {
+                    console.log('request is received')
+                }
+            },
+            debug: true
+        });
+    </script>
+</body>
 
-
-!function() {
-  var emitter = {
-    emit: console.dir.bind(console)
-  }
-
-  function emit(mutation) {
-    var target = mutation.target
-    var name = mutation.attributeName
-    var value = target.getAttribute(name)
-
-    emitter.emit({
-      mutation: mutation,
-      target: target,
-      name: name,
-      value: value,
-      state: value != null
-    })
-  }
-
-  var observer = new MutationObserver(function(mutations) {
-    mutations.forEach(emit)
-  });
-
-  observer.observe(document.body, {
-    subtree: true,
-    attributes: true
-  });
-}();
-
-var targetNodes         = $(".myclass");
-var MutationObserver    = window.MutationObserver || window.WebKitMutationObserver;
-var myObserver          = new MutationObserver (mutationHandler);
-var obsConfig           = { childList: true, characterData: true, attributes: true, subtree: true };
-
-//--- Add a target node to the observer. Can only add one node at a time.
-targetNodes.each ( function () {
-    myObserver.observe (this, obsConfig);
-} );
-
-function mutationHandler (mutationRecords) {
-    console.info ("mutationHandler:");
-
-    mutationRecords.forEach ( function (mutation) {
-        console.log (mutation.type);
-        if (typeof mutation.removedNodes == "object") {
-            var jq = $(mutation.removedNodes);
-            console.log (jq);
-            console.log (jq.is("span.myclass2"));
-            console.log (jq.find("span") );
-        }
-    } );
-}
-
-/**************************************
-    jsFiddle only
-*/
-$("button").click ( function () {
-    var target   = $("#payload");
-    if (/censored/i.test (target.text () ) ) {
-        target.html ('<span class="myclass2">My <span class="boldly">vastly</span> improved</span> text.');
-    }
-    else {
-        target.html ('[censored!]');
-    }
-} );
+</html>
