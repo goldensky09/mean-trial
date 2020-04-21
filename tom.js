@@ -150,3 +150,18 @@ Highcharts.getJSON('https://www.highcharts.com/samples/data/aapl-c.json', functi
         }]
     });
 });
+
+
+function counter(value) {
+   let increment = value > 1000 ? 1000 : 1;
+   let current = increment;
+   timer = setInterval(() => {
+    current += increment;
+    let number = `${current}`
+    console.log(number.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,"));
+    if (value == current) {
+     clearInterval(timer);
+    }
+   }, 0);
+ }
+ counter(500);
